@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="#01a4ef"
+        android:gravity="center"
+        android:text="易加蓝牙助手"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_receive"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_receive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="数据接收："
+        android:textColor="#000"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toTopOf="@+id/sv_receive"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <ScrollView
+        android:id="@+id/sv_receive"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape"
+        app:layout_constraintBottom_toTopOf="@+id/tv_send"
+        app:layout_constraintTop_toBottomOf="@id/tv_receive">
+
+        <TextView
+            android:id="@+id/tv_receive_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#000" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="数据发送："
+        android:textColor="#000"
+        android:textSize="17dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sv_receive" />
+
+    <EditText
+        android:id="@+id/et_send"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="8dp"
+        android:maxLength="244"
+        android:lines="5"
+        android:gravity="top"
+        android:background="@drawable/shape"
+        android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_send"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/bt_send" />
+
+    <Button
+        android:id="@+id/bt_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:text="发送"
+        app:layout_constraintLeft_toRightOf="@id/et_send"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/et_send" />
+
+    <CheckBox
+        android:id="@+id/cb_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:checked="true"
+        android:text="滚动"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_hex_rev"
+        app:layout_constraintRight_toLeftOf="@id/cb_hex_rev" />
+
+    <CheckBox
+        android:id="@+id/cb_hex_rev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Hex"
+        app:layout_constraintRight_toRightOf="@id/sv_receive"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <Button
+        android:id="@+id/bt_clear"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="5dp"
+        android:text="清空"
+        app:layout_constraintRight_toLeftOf="@+id/cb_scroll"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        />
+
+    <CheckBox
+        android:id="@+id/cb_hex_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Hex"
+        app:layout_constraintRight_toRightOf="@+id/sv_receive"
+        app:layout_constraintTop_toBottomOf="@+id/sv_receive" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="14dp"
+        android:src="@drawable/back"
+        app:layout_constraintDimensionRatio="96:170"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="72dp"
+        android:layout_height="48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,7 @@
 package cn.eciot.ble_demo
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.bluetooth.*
 import android.content.Context
 import android.location.LocationManager
@@ -10,9 +12,23 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.experimental.and
 
+//创建全局Context
+class MyApplication:Application(){
+    companion object{
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        context = applicationContext
+    }
+}
+/********************/
+
 object ECBLE {
 
-    var bleContext: Context? = null
+//    var bleContext: Context? = null
     var bluetoothAdapter: BluetoothAdapter? = null
     var leScanCallback =
         BluetoothAdapter.LeScanCallback { bluetoothDevice: BluetoothDevice, rssi: Int, bytes: ByteArray ->
@@ -120,7 +136,8 @@ object ECBLE {
     }
 
     fun bluetoothAdapterInit(context: Context): Int {
-        bleContext = context
+
+        //bleContext = context
         if (bluetoothAdapter == null) bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         bluetoothGatt?.close()
         if (bluetoothAdapter == null) {
@@ -172,7 +189,7 @@ object ECBLE {
         for (item in deviceList) {
             if (item.name == name) {
                 bluetoothGatt =
-                    item.bluetoothDevice.connectGatt(bleContext, false, bluetoothGattCallback);
+                    item.bluetoothDevice.connectGatt(/**bleContext**/MyApplication.context, false, bluetoothGattCallback);
                 isExist = true
                 break;
             }

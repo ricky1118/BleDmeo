@@ -2,11 +2,13 @@ package cn.eciot.ble_demo
 
 import android.Manifest
 import android.app.ProgressDialog
+//import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -81,7 +83,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    fun uiInit() {
+    private fun uiInit() {
         //下拉刷新
         val swipRefreshLayout: SwipeRefreshLayout = findViewById(R.id.swipe_layout)
         swipRefreshLayout.setColorSchemeColors(0x01a4ef)
@@ -90,7 +92,10 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             deviceListData.clear()
             listViewAdapter?.notifyDataSetChanged()
             ECBLE.stopBluetoothDevicesDiscovery()
-            Handler().postDelayed({
+            //为一种实现多线程方法，通过创建一个Handler对象和一个Runnable对象；使用postDelayed（）方法
+            // 使之从新调用Runnable对象
+            // 以下代码的意思是1000ms后运行swipRefreshLayout.isRefreshing = false 和 bluetoothInit()
+            Handler(Looper.myLooper()!!).postDelayed({
                 swipRefreshLayout.isRefreshing = false
                 bluetoothInit()
             }, 1000)
@@ -108,7 +113,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 //                    showToast("连接成功")
                     //跳转设备页
                     runOnUiThread {
-                        startActivity(Intent().setClass(this, DeviceActivity().javaClass))
+                        startActivity(Intent().setClass(this, DeviceActivity::class.java/*DeviceActivity().javaClass*/))
                     }
                 } else {
                     showToast("连接失败")
@@ -118,14 +123,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         listRefresh();
     }
 
-    fun listRefresh() {
+    private fun listRefresh() {
         Handler().postDelayed({
             listViewAdapter?.notifyDataSetChanged()
             listRefresh()
         }, 500)
     }
 
-    fun showAlert(title: String, content: String, callback: () -> Unit) {
+    private fun showAlert(title: String, content: String, callback: () -> Unit) {
         runOnUiThread {
             AlertDialog.Builder(this)
                 .setTitle(title)
@@ -137,7 +142,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    fun showConnectDialog() {
+    private fun showConnectDialog() {
         runOnUiThread {
             if (connectDialog == null) {
                 connectDialog = ProgressDialog(this)
@@ -147,19 +152,19 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    fun hideConnectDialog() {
+    private fun hideConnectDialog() {
         runOnUiThread {
             connectDialog?.dismiss()
         }
     }
 
-    fun showToast(text: String) {
+    private fun showToast(text: String) {
         runOnUiThread {
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         }
     }
-
-    fun bluetoothInit() {
+//本机蓝牙初始化
+    private fun bluetoothInit() {
         val res = ECBLE.bluetoothAdapterInit(this)
         if (res == 1) {
             showAlert("提示", "设备不支持蓝牙，软件无法使用") {
@@ -180,6 +185,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             return
         }
 
+    //开始扫描发现蓝牙设备
         ECBLE.startBluetoothDevicesDiscovery { name, rssi ->
             runOnUiThread {
 //                Log.e("Discovery", name + "|" + rssi)

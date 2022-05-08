@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndrodProject/ble-demo/app/src/main/res/layout/activity_device.xml" value="0.34479166666666666" />
         <entry key="..\:/AndrodProject/ble-demo/app/src/main/res/layout/activity_main.xml" value="0.25729166666666664" />
+        <entry key="..\:/AndrodProject/ble-demo/app/src/main/res/layout/activity_welcome.xml" value="0.2598958333333333" />
         <entry key="..\:/AndrodProject/ble-demo/app/src/main/res/layout/list_item.xml" value="0.25729166666666664" />
       </map>
     </option>

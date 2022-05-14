@@ -3,6 +3,8 @@ package cn.eciot.ble_demo
 import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.*
+import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.location.LocationManager
 import android.os.Build
@@ -29,6 +31,9 @@ class MyApplication:Application(){
 object ECBLE {
 
 //    var bleContext: Context? = null
+ //*********************************************************************************************
+// ***********************蓝牙扫描回调        BluetoothAdapter.leScanCallback********************
+// *********************************************************************************************
     var bluetoothAdapter: BluetoothAdapter? = null
     var leScanCallback =
         BluetoothAdapter.LeScanCallback { bluetoothDevice: BluetoothDevice, rssi: Int, bytes: ByteArray ->
@@ -50,6 +55,10 @@ object ECBLE {
             }
             scanCallback(bluetoothDevice.name, rssi)
         }
+
+    //**********************************************
+    // ********蓝牙连接回调 BluetoothGattCallback
+    // ***********************************************
     var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
     var scanFlag: Boolean = false
 
@@ -57,6 +66,7 @@ object ECBLE {
 
     var deviceList: MutableList<bleDevice> = ArrayList()
     var bluetoothGatt: BluetoothGatt? = null
+   //******蓝牙连接回调开始*****
     var bluetoothGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
 //            Log.e("onConnectionStateChange", "status=" + status + "|" + "newState=" + newState);
@@ -116,10 +126,12 @@ object ECBLE {
 //                Log.e("BleService", "onMtuChanged fail ");
 //            }
         }
-    }
-    var connectCallback: (ok: Boolean, errCode: Int) -> Unit = { _, _ -> }
+    }//
+/*******************以上是扫描回调部分******************************************************************************************/
+    //**********************************************//
+    var connectCallback: (ok: Boolean, errCode: Int)-> Unit = { _, _ -> }
     var reconnectTime = 0
-    var connectionStateChangeCallback: (ok: Boolean) -> Unit = { _ -> }
+    var connectionStateChangeCallback: (ok: Boolean)-> Unit  = { _ -> }
     var getServicesCallback: (servicesList: List<String>) -> Unit = { _ -> }
     var characteristicChangedCallback: (hex: String, string: String) -> Unit = { _, _ -> }
     val ecServerId = "0000FFF0-0000-1000-8000-00805F9B34FB"
@@ -170,6 +182,7 @@ object ECBLE {
     fun startBluetoothDevicesDiscovery(callback: (name: String, rssi: Int) -> Unit) {
         scanCallback = callback
         if (!scanFlag) {
+            // BluetoothLeScanner.startScan(ScanCallback callback)
             bluetoothAdapter?.startLeScan(leScanCallback)
             scanFlag = true
         }
@@ -177,6 +190,7 @@ object ECBLE {
 
     fun stopBluetoothDevicesDiscovery() {
         if (scanFlag) {
+       //     BluetoothLeScanner.stop
             bluetoothAdapter?.stopLeScan(leScanCallback)
             scanFlag = false
         }
@@ -320,6 +334,7 @@ object ECBLE {
     }
 
     fun setMtu(v: Int) {
+        //安卓5.0以上版本
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bluetoothGatt?.requestMtu(v)
         }

@@ -37,6 +37,8 @@ object ECBLE {
     var bluetoothAdapter: BluetoothAdapter? = null
     var leScanCallback =
         BluetoothAdapter.LeScanCallback { bluetoothDevice: BluetoothDevice, rssi: Int, bytes: ByteArray ->
+            //BluetoothAdapter.LeScanCallback(BluetoothDevice device,   int rssi, byte[] scanRecord)
+            // byte[] scanRecord: 远程端蓝牙的广播数据， device  远程l蓝牙设备，rssi信号强度
 //            Log.e("bleDiscovery", bluetoothDevice.name + "|" + rssi)
 //            Log.e("bleDiscovery-bytes-len", "" + bytes.size)
 //            Log.e("bleDiscovery-bytes", "" + bytesToHexString(bytes))

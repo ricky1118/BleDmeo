@@ -34,6 +34,12 @@ object ECBLE {
  //*********************************************************************************************
 // ***********************蓝牙扫描回调        BluetoothAdapter.leScanCallback********************
 // *********************************************************************************************
+var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
+    var scanFlag: Boolean = false
+
+    class bleDevice(var name: String, var rssi: Int, var bluetoothDevice: BluetoothDevice)
+
+    var deviceList: MutableList<bleDevice> = ArrayList()
     var bluetoothAdapter: BluetoothAdapter? = null
     var leScanCallback =
         BluetoothAdapter.LeScanCallback { bluetoothDevice: BluetoothDevice, rssi: Int, bytes: ByteArray ->
@@ -61,12 +67,7 @@ object ECBLE {
     //**********************************************
     // ********蓝牙连接回调 BluetoothGattCallback
     // ***********************************************
-    var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
-    var scanFlag: Boolean = false
 
-    class bleDevice(var name: String, var rssi: Int, var bluetoothDevice: BluetoothDevice)
-
-    var deviceList: MutableList<bleDevice> = ArrayList()
     var bluetoothGatt: BluetoothGatt? = null
    //******蓝牙连接回调开始*****
     var bluetoothGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
@@ -129,7 +130,7 @@ object ECBLE {
 //            }
         }
     }//
-/*******************以上是扫描回调部分******************************************************************************************/
+/*******************以上是连接回调部分******************************************************************************************/
     //**********************************************//
     var connectCallback: (ok: Boolean, errCode: Int)-> Unit = { _, _ -> }
     var reconnectTime = 0

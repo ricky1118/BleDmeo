@@ -34,7 +34,7 @@ object ECBLE {
  //*********************************************************************************************
 // ***********************蓝牙扫描回调        BluetoothAdapter.leScanCallback********************
 // *********************************************************************************************
-var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
+var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达式中不需要处理的参数用下划线，函数类型
     var scanFlag: Boolean = false
 
     class bleDevice(var name: String, var rssi: Int, var bluetoothDevice: BluetoothDevice)
@@ -45,9 +45,9 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
         BluetoothAdapter.LeScanCallback { bluetoothDevice: BluetoothDevice, rssi: Int, bytes: ByteArray ->
             //BluetoothAdapter.LeScanCallback(BluetoothDevice device,   int rssi, byte[] scanRecord)
             // byte[] scanRecord: 远程端蓝牙的广播数据， device  远程l蓝牙设备，rssi信号强度
-//            Log.e("bleDiscovery", bluetoothDevice.name + "|" + rssi)
-//            Log.e("bleDiscovery-bytes-len", "" + bytes.size)
-//            Log.e("bleDiscovery-bytes", "" + bytesToHexString(bytes))
+            Log.e("bleDiscovery", bluetoothDevice.name + "|" + rssi)
+            Log.e("bleDiscovery-bytes-len", "" + bytes.size)
+            Log.e("bleDiscovery-bytes", "" + bytesToHexString(bytes))
             if (bluetoothDevice.name == null) return@LeScanCallback
             var isExist: Boolean = false
             for (item in deviceList) {
@@ -130,13 +130,14 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
 //            }
         }
     }//
-/*******************以上是连接回调部分******************************************************************************************/
-    //**********************************************//
-    var connectCallback: (ok: Boolean, errCode: Int)-> Unit = { _, _ -> }
+
+    var connectCallback: (ok: Boolean, errCode: Int)-> Unit =  { _, _ -> }
     var reconnectTime = 0
     var connectionStateChangeCallback: (ok: Boolean)-> Unit  = { _ -> }
     var getServicesCallback: (servicesList: List<String>) -> Unit = { _ -> }
     var characteristicChangedCallback: (hex: String, string: String) -> Unit = { _, _ -> }
+    /*******************以上是连接回调部分******************************************************************************************/
+    //**********************************************//
     val ecServerId = "0000FFF0-0000-1000-8000-00805F9B34FB"
     val ecWriteCharacteristicId = "0000FFF2-0000-1000-8000-00805F9B34FB"
     val ecReadCharacteristicId = "0000FFF1-0000-1000-8000-00805F9B34FB"
@@ -185,7 +186,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
     fun startBluetoothDevicesDiscovery(callback: (name: String, rssi: Int) -> Unit) {
         scanCallback = callback
         if (!scanFlag) {
-            // BluetoothLeScanner.startScan(ScanCallback callback)
+        //     BluetoothLeScanner.startScan(leScanCallback)
             bluetoothAdapter?.startLeScan(leScanCallback)
             scanFlag = true
         }
@@ -222,7 +223,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
 
     private fun getBLEDeviceServices(callback: (servicesList: List<String>) -> Unit) {
         getServicesCallback = callback
-        bluetoothGatt?.discoverServices();
+        bluetoothGatt?.discoverServices()
     }
 
     //    ECBLE.getBLEDeviceCharacteristics("0000fff0-0000-1000-8000-00805f9b34fb")
@@ -243,7 +244,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
         characteristicId: String
     ): Boolean {
         val service = bluetoothGatt?.getService(UUID.fromString(serviceId)) ?: return false
-        val characteristicRead = service.getCharacteristic(UUID.fromString(characteristicId));
+        val characteristicRead = service.getCharacteristic(UUID.fromString(characteristicId))
         val res =
             bluetoothGatt?.setCharacteristicNotification(characteristicRead, true) ?: return false
         if (!res) return false
@@ -254,16 +255,16 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
         return true
     }
 
-    fun onBLECharacteristicValueChange(callback: (hex: String, string: String) -> Unit) {
-        characteristicChangedCallback = callback
+    fun onBLECharacteristicValueChange(callback2: (hex: String, string: String) -> Unit) {
+        characteristicChangedCallback = callback2
     }
 
-    fun easyOneConnect(name: String, callback: (ok: Boolean) -> Unit) {
+    fun easyOneConnect(name: String, callback: (ok: Boolean) -> Unit)  {
         createBLEConnection(name) { ok: Boolean, errCode: Int ->
 //            Log.e("Connection", "res:" + ok + "|" + errCode)
             if (ok) {
 //                onBLECharacteristicValueChange { hex: String, string: String ->
-//                    Log.e("hex", hex)
+//                    Log.e("hex", hex)callback: (ok: Boolean) -> Unit)
 //                    Log.e("string", string)
 //                }
                 getBLEDeviceServices() {
@@ -312,7 +313,10 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
         connectionStateChangeCallback = { _ -> }
     }
 
-
+/********************************************************************************
+ * 向蓝牙发送数据
+ *
+ * *****************************************************************************/
     private fun writeBLECharacteristicValue(
         serviceId: String,
         characteristicId: String,
@@ -335,14 +339,22 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }
     fun easySendData(data: String, isHex: Boolean) {
         writeBLECharacteristicValue(ecServerId, ecWriteCharacteristicId, data, isHex)
     }
+/*****************************************************************************************************************************/
 
+/**********************************************************
+ * 设顶MTU数据宽度
+ *
+ * *******************************************************************/
     fun setMtu(v: Int) {
         //安卓5.0以上版本
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             bluetoothGatt?.requestMtu(v)
         }
     }
-
+/***************************************************************
+ * byteToHexString
+ * to byteArray
+ * *************************************************************/
     fun bytesToHexString(bytes: ByteArray?): String {
         if (bytes == null) return ""
         var str = ""

@@ -59,17 +59,18 @@ class DeviceActivity : AppCompatActivity() {
         findViewById<Button>(R.id.bt_clear).setOnClickListener {
             receiveDataTextView?.text = ""
         }
-
+        //注册一个回调，当设备断开时触发
         ECBLE.onBLEConnectionStateChange {
             showToast("设备断开")
         }
+        //注册一个回调，当收到数据时触发
         ECBLE.onBLECharacteristicValueChange { hex, string ->
             runOnUiThread {
                 val timeStr =
                     SimpleDateFormat("[HH:mm:ss,SSS]:").format(Date(System.currentTimeMillis()))
                 val nowStr = receiveDataTextView?.text.toString()
                 if (hexRevCheckBox?.isChecked == true) {
-                    receiveDataTextView?.text = nowStr + timeStr + hex + "\r\n"
+                    receiveDataTextView?.text = nowStr+ timeStr + hex + "\r\n"
                 } else {
                     receiveDataTextView?.text = nowStr + timeStr + string + "\r\n"
                 }

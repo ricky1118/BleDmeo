@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         listView?.adapter = listViewAdapter
         listView?.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
             showConnectDialog()
-            ECBLE.easyConnect(deviceListData.get(i).name) {
+            ECBLE.easyConnect(deviceListData[i].name) {
                 hideConnectDialog()
                 if (it) {
 //                    showToast("连接成功")

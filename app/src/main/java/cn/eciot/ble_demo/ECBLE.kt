@@ -129,6 +129,9 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
 //                Log.e("BleService", "onMtuChanged fail ");
 //            }
         }
+
+
+
     }//
 
     var connectCallback: (ok: Boolean, errCode: Int)-> Unit =  { _, _ -> }
@@ -229,7 +232,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
     //    ECBLE.getBLEDeviceCharacteristics("0000fff0-0000-1000-8000-00805f9b34fb")
     private fun getBLEDeviceCharacteristics(serviceId: String): MutableList<String> {
         val service = bluetoothGatt?.getService(UUID.fromString(serviceId))
-        val listGattCharacteristic = service?.getCharacteristics()
+        val listGattCharacteristic = service?.characteristics
         val characteristicsList: MutableList<String> = ArrayList()
         if (listGattCharacteristic == null) return characteristicsList
         for (item in listGattCharacteristic) {

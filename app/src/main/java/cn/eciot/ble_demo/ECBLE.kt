@@ -225,7 +225,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
     }
 /*******************************************************
  *服务查找
- *参数为找到的所有服务列表的结果回调,本例中在调用时为使用参数
+ *参数为找到的所有服务列表的结果回调,本例中在调用时未使用参数
  * ****************************************************/
     private fun getBLEDeviceServices(callback: (servicesList: List<String>) -> Unit) {
         getServicesCallback = callback
@@ -248,8 +248,9 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
         return characteristicsList
     }
 /**************************************************************************
- *
- *
+ *BLE 应用通常会要求在设备上的特定特征发生变化时收到通知。
+ * 以下代码段展示如何使用 setCharacteristicNotification() 方法设置特征的通知：
+ *为某个特征启用通知后，如果远程设备上的特征发生更改，则会触发 onCharacteristicChanged() 回调
  * ***********************************************************************/
     private fun notifyBLECharacteristicValueChange(
         serviceId: String,

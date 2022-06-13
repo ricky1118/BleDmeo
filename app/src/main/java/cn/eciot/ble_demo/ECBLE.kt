@@ -203,16 +203,16 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
         }
     }
 //创建连接
-    private fun createBLEConnection(name: String, callback: (ok: Boolean, errCode: Int) -> Unit) {
-        connectCallback = callback
+    private fun createBLEConnection(name: String, callback4: (ok: Boolean, errCode: Int) -> Unit) {
+        connectCallback = callback4
         connectionStateChangeCallback = { _ -> }
         var isExist: Boolean = false
         for (item in deviceList) {
             if (item.name == name) {
                 bluetoothGatt =
-                    item.bluetoothDevice.connectGatt(/**bleContext**/MyApplication.context, false, bluetoothGattCallback);
+                    item.bluetoothDevice.connectGatt(/**bleContext**/MyApplication.context, false, bluetoothGattCallback)
                 isExist = true
-                break;
+                break
             }
         }
         if (!isExist) {
@@ -234,6 +234,8 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
 /***********************************************
  * 获得服务的特征列表
  * 返回基于指定服务的所有特征列表
+ * 本例原在easyOneConnect函数中调用，但是历程中并未有使用到的地方所有暂时屏蔽使用
+ * 需要时可以调用
  * ********************************************/
     //    ECBLE.getBLEDeviceCharacteristics("0000fff0-0000-1000-8000-00805f9b34fb")
     private fun getBLEDeviceCharacteristics(serviceId: String): MutableList<String> {
@@ -257,7 +259,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
         characteristicId: String//调用的时候赋值成ecReadCharacteristicId
     ): Boolean {
         val service = bluetoothGatt?.getService(UUID.fromString(serviceId)) ?: return false//获得相应服务的service,如果服务是空则返回false
-        val characteristicRead = service.getCharacteristic(UUID.fromString(characteristicId))//获得服务下特定的特征
+        val characteristicRead = service.getCharacteristic(UUID.fromString(characteristicId))//获得服务下特定的特征(读特征)
         val res =
             bluetoothGatt?.setCharacteristicNotification(characteristicRead, true) ?: return false//设定读特征
         if (!res) return false//如果上一条的特征值是空则返回false,否者继续往下
@@ -293,7 +295,7 @@ var scanCallback: (name: String, rssi: Int) -> Unit = { _, _ -> }//lambda表达�
 //                    for (item in it) {
 //                        Log.e("ble-service", "UUID=" + item)
 //                    }
-                    getBLEDeviceCharacteristics(ecServerId)
+                  //  getBLEDeviceCharacteristics(ecServerId)//获得该服务下的所有特征列表
                     notifyBLECharacteristicValueChange(ecServerId, ecReadCharacteristicId)
                     callback(true)
                     Thread() {
